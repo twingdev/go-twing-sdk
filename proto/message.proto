@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option go_package = "proto/pb";
+
+
+enum MessageTypes {
+  DEFAULT = 0;
+  ENCRYPTED = 1;
+  PLAIN_TEXT = 2;
+  GOSSIP = 3;
+  HANDSHAKE = 4;
+  SIGNATURE = 5;
+  REQUEST = 6;
+  AUTH = 7;
+  ERROR = 8;
+  TIME = 9;
+  TX = 10;
+  BATCH_SIG = 11;
+  BATCH_STD = 12;
+
+}
+
+enum SIGNATURE_ALGS {
+  SIG_DEFAULT = 0;
+  SIG_EDWARD25519 = 1;
+  SIG_FALCON = 2;
+  SIG_HPKE = 3;
+}
+
+message Signature {
+  string id = 1;
+  string signer = 2;
+  string pubKey = 3;
+  string signature = 4;
+  SIGNATURE_ALGS alg = 5;
+}
+
+message Message {
+
+  string id = 1;
+  int64 timestamp = 2;
+  MessageTypes type = 3;
+  Signature signature = 4;
+
+}
+
+message EncryptedMessage {
+  Message msgData = 1;
+  string peerID = 2;
+  string aad = 3;
+  string data = 4;
+}
+
+message Request {
+  Message msgData = 1;
+  bytes request = 2;
+  string fromPeer = 3;
+  string referrer = 4;
+}
+
+message Errors {
+  int32 errorCode = 1;
+  string errorMessage = 2;
+  int64 timestamp = 3;
+}
+
+message Response {
+  Message msgData = 1;
+  bytes response = 2;
+  Errors errors = 3;
+}
